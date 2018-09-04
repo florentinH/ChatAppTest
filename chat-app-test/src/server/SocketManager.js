@@ -1,6 +1,6 @@
 'use strict';
 
-const io = require('./index.js').io;
+const io = require('../../server/server.js').io;
 
 const {VERIFY_USER, USER_CONNECTED, USER_DISCONNECTED,
 		LOGOUT, COMMUNITY_CHAT, MESSAGE_RECIEVED, MESSAGE_SENT,
@@ -23,10 +23,10 @@ module.exports = function(socket) {
 	//Verify Username
   socket.on(VERIFY_USER, (nickname, callback)=>{
     if (isUser(connectedUsers, nickname)) {
-    callback({isUser: true, user: null});
-  } else {
-    callback({isUser: false, user: createUser({name: nickname})});
-  }
+    	callback({isUser: true, user: null});
+    } else {
+      callback({isUser: false, user: createUser({name: nickname})});
+  	}
   });
 
 	//User Connects with username
@@ -44,11 +44,11 @@ module.exports = function(socket) {
 	//User disconnects
   socket.on('disconnect', ()=>{
     if ('user' in socket) {
-    connectedUsers = removeUser(connectedUsers, socket.user.name);
+      connectedUsers = removeUser(connectedUsers, socket.user.name);
 
-    io.emit(USER_DISCONNECTED, connectedUsers);
-    console.log('Disconnect', connectedUsers);
-  }
+    	io.emit(USER_DISCONNECTED, connectedUsers);
+    	console.log('Disconnect', connectedUsers);
+  	}
   });
 
 	//User logsout
@@ -79,8 +79,8 @@ module.exports = function(socket) {
 */
 function sendTypingToChat(user) {
   return (chatId, isTyping)=>{
-  io.emit(`${TYPING}-${chatId}`, {user, isTyping});
-};
+    io.emit(`${TYPING}-${chatId}`, {user, isTyping});
+  };
 }
 
 /*
@@ -91,8 +91,8 @@ function sendTypingToChat(user) {
 */
 function sendMessageToChat(sender) {
   return (chatId, message)=>{
-  io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({message, sender}));
-};
+    io.emit(`${MESSAGE_RECIEVED}-${chatId}`, createMessage({message, sender}));
+  };
 }
 
 /*
